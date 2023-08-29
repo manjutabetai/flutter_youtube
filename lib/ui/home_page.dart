@@ -5,6 +5,7 @@ import 'package:flutter_todo/controller/task_controller.dart';
 import 'package:flutter_todo/service/notification_services.dart';
 import 'package:flutter_todo/service/theme_service.dart';
 import 'package:flutter_todo/ui/add_task_bar.dart';
+import 'package:flutter_todo/ui/description_screen.dart';
 import 'package:flutter_todo/ui/theme.dart';
 import 'package:flutter_todo/ui/widget/button.dart';
 import 'package:flutter_todo/ui/widget/task_tile.dart';
@@ -34,6 +35,8 @@ class _MyHomePageState extends State<MyHomePage> {
     notifyHelper.initializeNotification();
     notifyHelper.requestIOSPermissions();
     notifyHelper.requestAndroidPermissions();
+    notifyHelper.requestPermission();
+    notifyHelper.getToken();
   }
 
   @override
@@ -63,21 +66,12 @@ class _MyHomePageState extends State<MyHomePage> {
               int minutes = int.parse(myTime.split(":")[1]);
               notifyHelper.scheduledNotification(hour, minutes, task);
 
-              return AnimationConfiguration.staggeredList(
-                position: index,
-                child: SlideAnimation(
-                  child: FadeInAnimation(
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            _showBottomSheet(context, task);
-                          },
-                          child: TaskTile(task),
-                        ),
-                      ],
-                    ),
-                  ),
+              return Card(
+                child: InkWell(
+                  onTap: () {
+                    Get.to(() => DescriptionPage(task: task));
+                  },
+                  child: TaskTile(task),
                 ),
               );
             } else if (task.date == DateFormat.yMd().format(_selectedDate)) {
@@ -284,10 +278,15 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       actions: [
-        Container(
-          margin: const EdgeInsets.all(4),
-          child: const CircleAvatar(
-            backgroundImage: AssetImage('images/man.png'),
+        GestureDetector(
+          onTap: () {
+            notifyHelper.sendPushMessage();
+          },
+          child: Container(
+            margin: const EdgeInsets.all(4),
+            child: const CircleAvatar(
+              backgroundImage: AssetImage('images/man.png'),
+            ),
           ),
         ),
         const SizedBox(

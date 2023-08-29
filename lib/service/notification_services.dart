@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -9,6 +12,7 @@ import 'package:timezone/timezone.dart' as tz;
 //　initializeTimeZones　を持っている。
 import 'package:timezone/data/latest.dart' as tz;
 import '../models/task.dart';
+import 'package:http/http.dart' as http;
 
 class NotifyHelper {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -37,7 +41,49 @@ class NotifyHelper {
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onDidReceiveNotificationResponse: selectNotification);
+
+    /// Firebase Massaging ///
+    ///
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print("----- on messaget -------");
+      print(
+          "onMessage: ${message.notification?.title}/${message.notification?.body}");
+
+      BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+        message.notification!.body.toString(),
+        htmlFormatBigText: true,
+        contentTitle: message.notification!.title.toString(),
+        htmlFormatContentTitle: true,
+      );
+
+      AndroidNotificationDetails androidPlatformChannelSpecifics =
+          AndroidNotificationDetails(
+        'adfood',
+        'adfood',
+        importance: Importance.high,
+        styleInformation: bigTextStyleInformation,
+        priority: Priority.high,
+        playSound: true,
+      );
+
+      NotificationDetails platformChannelSpecifics = NotificationDetails(
+          android: androidPlatformChannelSpecifics,
+          iOS: const DarwinNotificationDetails());
+
+      await flutterLocalNotificationsPlugin.show(
+        0,
+        message.notification!.title,
+        message.notification!.body,
+        platformChannelSpecifics,
+        payload: message.data['body'],
+      );
+    });
   }
+
+  /// イニシャライズここまで
+  ///
+  /// 通知選択
 
   void selectNotification(NotificationResponse response) async {
     final payload = response.payload;
@@ -144,5 +190,78 @@ class NotifyHelper {
         await FlutterTimezone.getLocalTimezone(); // ローカルタイムゾーンの名前を取得
 
     tz.setLocalLocation(tz.getLocation(localTimeZoneName));
+  }
+
+  void requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print("User granted permission");
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print('User granted provisional permission');
+    } else {
+      print('user declined or has not accepted permission');
+    }
+  }
+
+  Future<String> getToken() async {
+    try {
+      String? token = await FirebaseMessaging.instance.getToken();
+      print("My token is $token");
+      if (token != null) {
+        return token;
+      } else {
+        return 's';
+      }
+    } catch (e) {
+      print('error $e');
+      return 'xx';
+    }
+  }
+
+  void sendPushMessage() async {
+    var token = await getToken();
+    var title = 'title';
+    var body = 'body';
+    try {
+      var res =
+          await http.post(Uri.parse("https://fcm.googleapis.com/fcm/send"),
+              headers: <String, String>{
+                'Content-Type': 'application/json',
+                'Authorization':
+                    'key=AAAAJlRGTBQ:APA91bGUaG7WVGVdKxrCSmY08TCYvKTkwFS0G8xkuGN0y3AOwLrI_o3uI9A9dQmx6ohsv2IYx7EEsUmw72_2H7hEwdyzreDMCe-T34mqmy7hz6klLmU8ez5Me_hbQ-DnKkvvNPxjlrft',
+              },
+              body: jsonEncode(
+                <String, dynamic>{
+                  'priority': 'high',
+                  'data': <String, dynamic>{
+                    'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+                    'status': 'done',
+                    'body': body,
+                    'title': title,
+                  },
+                  "notification": <String, dynamic>{
+                    "title": title,
+                    "body": body,
+                    "android_channel_id": "dbfood"
+                  },
+                  "to": token,
+                },
+              ));
+      print(res.statusCode);
+    } catch (e) {
+      print(e);
+    }
   }
 }

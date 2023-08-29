@@ -30,7 +30,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  firebase_core: ^2.15.1 
+  firebase_messaging: 
+  http: 
+  cloud_firestore: 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -43,7 +46,6 @@ dependencies:
   date_picker_timeline: 
   sqflite: 
   flutter_staggered_animations: 
-  # timezone: 
   flutter_timezone:
 dev_dependencies:
   flutter_test:

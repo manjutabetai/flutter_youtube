@@ -25,13 +25,16 @@ class TaskTile extends StatelessWidget {
               child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                task?.title ?? "",
-                style: GoogleFonts.lato(
-                  textStyle: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+              Hero(
+                tag: task!.id.toString(),
+                child: Text(
+                  task?.title ?? "",
+                  style: GoogleFonts.lato(
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -60,11 +63,14 @@ class TaskTile extends StatelessWidget {
               const SizedBox(
                 height: 12,
               ),
-              Text(
-                task?.note ?? "",
-                style: GoogleFonts.lato(
-                    textStyle:
-                        const TextStyle(fontSize: 16, color: Colors.grey)),
+              Hero(
+                tag: task!.note.toString(),
+                child: Text(
+                  task?.note ?? "",
+                  style: GoogleFonts.lato(
+                      textStyle:
+                          const TextStyle(fontSize: 16, color: Colors.grey)),
+                ),
               )
             ],
           )),

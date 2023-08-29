@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "164622650388",
+    "project_id": "notifiymessaging",
+    "storage_bucket": "notifiymessaging.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:164622650388:android:9695ae57086ab2f1de6b01",
+        "android_client_info": {
+          "package_name": "com.example.flutter_todo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "164622650388-15uskjmc1fuote6en68asqbjqicas4ia.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlfm4sQOHZHKLux8m0qqaFsZr8x9bHgc8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "164622650388-15uskjmc1fuote6en68asqbjqicas4ia.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "164622650388-p45q96mtlk618qtsqe7lipgeqtocnoka.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flutterTodo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
