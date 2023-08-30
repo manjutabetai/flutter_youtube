@@ -66,12 +66,16 @@ class _MyHomePageState extends State<MyHomePage> {
               int minutes = int.parse(myTime.split(":")[1]);
               notifyHelper.scheduledNotification(hour, minutes, task);
 
-              return Card(
-                child: InkWell(
-                  onTap: () {
-                    Get.to(() => DescriptionPage(task: task));
-                  },
-                  child: TaskTile(task),
+              return Hero(
+                tag: task.id.toString(),
+                child: Card(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      Get.to(() => DescriptionPage(task: task));
+                    },
+                    child: TaskTile(task),
+                  ),
                 ),
               );
             } else if (task.date == DateFormat.yMd().format(_selectedDate)) {

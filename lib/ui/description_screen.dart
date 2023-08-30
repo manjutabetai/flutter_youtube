@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_todo/ui/theme.dart';
+import 'package:flutter_todo/ui/widget/task_tile.dart';
 
 import '../models/task.dart';
 
@@ -16,21 +16,10 @@ class DescriptionPage extends StatelessWidget {
         backgroundColor: Colors.white.withOpacity(0),
       ),
       body: Center(
-        child: Column(children: [
-          Hero(
-            tag: task.id.toString(),
-            child: Text(
-              task.note.toString(),
-              style: headingStyle,
-            ),
-          ),
-          Hero(
-              tag: task.note.toString(),
-              child: Text(
-                task.note.toString(),
-                style: subHeadingStyle,
-              ))
-        ]),
+        child: Hero(
+          tag: task.id.toString(),
+          child: TaskTile(task),
+        ),
       ),
     );
   }
